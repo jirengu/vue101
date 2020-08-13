@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Vue 使用范例1</title>
+  </head>
+  <style>
+    div {
+      margin-top: 30px;
+    }
+
+    .theme-dark {
+      background: #000;
+      color: #fff;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
+
+  <body>
+    <div id="app">
+      <h2>{{ message }}</h2>
+
+      <ul>
+        <li v-for="(item, index) in list" :key="index">{{item}}</li>
+      </ul>
+
+      <div>
+        {{count}}
+        <button @click="addCounter">加1</button>
+      </div>
+
+      <div v-bind:class="{'theme-dark': isDark}">
+        修改样式
+
+        <button @click="toggleTheme">切换样式</button>
+      </div>
+
+      <div >
+        <h2>天气预报 <button @click="getWeather">获取天气</button></h2>
+
+        <ol v-if="weather">
+          <li>城市: {{weather.currentCity}}</li>
+          <li>PM2.5: {{weather.pm25}}</li>
+          <li>建议:
+            <ol>
+              <li v-for="(item, index) in weather.index">{{item.des}}</li>
+            </ol>
+          </li>
+        </ol>
+      </div>
+
+    </div>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: 'Hello Vue!',
+          list: ['HTML', 'CSS', 'JavaScript'],
+          count: 0,
+          isDark: true,
+          weather: null
+        },
+
+        methods: {
+          addCounter() {
+            this.count++
+          },
+
+          toggleTheme() {
+            this.isDark = !this.isDark 
+          },
+
+          getWeather() {
+            fetch('http://api.jirengu.com/getWeather.php')
+              .then(res => res.json())
+              .then(ret => {
+              console.log(ret.results[0])
+              this.weather = ret.results[0]
+            })
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
